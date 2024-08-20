@@ -20,7 +20,7 @@
     "issues": "https://github.com/r0nn1ef/ow_onecall/issues"
   },
   "require": {
-    "drupal/core": "^10.0 || ^11",
+    "drupal/core": "^10.3 || ^11",
     "vlucas/phpdotenv": "^5.6"
   }
 }
