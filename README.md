@@ -3,6 +3,9 @@
 The OpenWeather API module is implements the OpenWeather One Call API 3.0 as a Service. By itself, this module does nothing
 and other modules should use it to connect and query the One Call API.
 
+Once complete, this module will be moved to Drupal.org as a community module. Currently, there are no
+tests which is recommended for contrib modules.
+
 ## REQUIREMENTS
 
 There are no other module dependencies for this module.
@@ -11,8 +14,21 @@ You will need an API key from [openweathermap.org](https://openweathermap.org) t
 
 ## INSTALLATION
 
-Install as you would normally install a contributed Drupal module.
-See: https://www.drupal.org/node/895232 for further information.
+The recommended method of installation is using composer. Before you can add this module to your project,
+you will need to first add this repository to your composer.json file under the "repositories" section. The code below
+demonstrates how to do this.
+
+```javascript
+"repositories": [
+    ... ,
+    {
+        "type": "vcs",
+        "url": "https://github.com/r0nn1ef/ow_onecall.git"
+    }
+]
+```
+
+Once you have the repository added, you can add the module using <code>composer require drupal/ow_onecall:@beta</code>
 
 ## CONFIGURATION
 - To enter your API key, navigate to /admin/config/services/openweather.
