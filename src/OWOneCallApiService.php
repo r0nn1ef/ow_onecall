@@ -224,11 +224,12 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface {
     if( $this->config->get('api_key_storage_type') == 'database' ) {
       $api_key = $this->getApiKey();
     }
-    // API key is in an environment variable.
-    if ( isset($_ENV[$this->config->get('environment_storage_key')]) ) {
+    // Try to get the api key from an environment variable.
+    if ( empty($api_key) && isset($_ENV[$this->config->get('environment_storage_key')]) ) {
       $api_key = $_ENV[$this->config->get('environment_storage_key')];
     }
-    if ( $this->config->get('use_dot_env') ) {
+    // Try to load the .env file using the phpdotenv library.
+    if ( empty($api_key) ) {
       $dotenv = \Dotenv\Dotenv::createImmutable(\Drupal::root());
       $dotenv->load();
       if ( isset($_ENV[$this->config->get('environment_storage_key')]) ) {
