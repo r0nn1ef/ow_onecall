@@ -18,7 +18,7 @@ See: https://www.drupal.org/node/895232 for further information.
 - To enter your API key, navigate to /admin/config/services/openweather.
 
 ## ROADMAP
-- Make api key optionally stored in either the database or in a .evn file.
+- [x] Make api key optionally stored in either the database or in a .evn file. :tada:
 
 ## MAINTAINERS
 
