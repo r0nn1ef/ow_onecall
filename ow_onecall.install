@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the OpenWeather API module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function ow_onecall_schema() {
+  $schema = [
+    'onecall_count' => [
+      'description' => 'Logs the number of calls to the OpenWeather One Call API with this module.',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'description' => 'Primary Key: Unique ID.',
+        ],
+        'call_date' => [
+          'type' => 'int',
+          'description' => 'The day for the API call log.',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'normal'
+        ],
+        'call_count' => [
+          'type' => 'int',
+          'description' => 'The number of calls for the given date.',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'normal'
+        ]
+      ],
+      'primary key' => ['id'],
+      'indexes' => [
+        'idx_call_date' => ['call_date']
+      ]
+    ]
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function ow_onecall_requirements($phase) {
+  $requirements = [];
+  if ( $phase == 'runtime') {
+    $today = new \DateTime();
+    $today->setTime(0, 0, 0);
+    $result = \Drupal::database()
+      ->query("SELECT call_count FROM {onecall_count} WHERE call_date = :today", [':today' => $today->getTimestamp()]);
+    $record = $result->fetchCol(0);
+    if ( $record ) {
+      $count = (int) $record[0];
+      if ( $count <= 750 ) {
+        $status = REQUIREMENT_OK;
+      } elseif ($count > 750 && $count < 1000) {
+        $status = REQUIREMENT_WARNING;
+      } elseif ( $count >= 1000 ) {
+        $status = REQUIREMENT_ERROR;
+      }
+      $requirements['ow_onecall'] = [
+        'title' => t('One Call API'),
+        'description' => t('There have been @count One Call API request(s) today.', ['@count' => $count]),
+        'severity' => $status,
+      ];
+    } else {
+      $requirements['ow_onecall'] = [
+        'title' => t('One Call API'),
+        'value' => 0,
+        'description' => t('There have been 0 One Call API requests today.'),
+        'severity' => REQUIREMENT_OK
+      ];
+    }
+  }
+
+  return $requirements;
+}

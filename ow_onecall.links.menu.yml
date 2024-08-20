@@ -1,0 +1,6 @@
+ow_onecall.settings:
+  title: One Call API
+  description: Configure the One Call API.
+  parent: system.admin_config_services
+  route_name: ow_onecall.settings
+  weight: 10

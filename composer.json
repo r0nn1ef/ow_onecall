@@ -1,0 +1,26 @@
+{
+  "name": "drupal/ow_onecall",
+  "description": "Provides a service for the OpenWeather One Call 3.0 API.",
+  "type": "drupal-module",
+  "keywords": [
+    "Drupal",
+    "Open Weather",
+    "One Call API"
+  ],
+  "homepage": "https://github.com/r0nn1ef/ow_onecall",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Ronald Ferguson (r0nn1ef)",
+      "homepage": "https://www.drupal.org/u/r0nn1ef",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/r0nn1ef/ow_onecall/issues"
+  },
+  "require": {
+    "drupal/core": "^10.0 || ^11",
+    "vlucas/phpdotenv": "^5.6"
+  }
+}

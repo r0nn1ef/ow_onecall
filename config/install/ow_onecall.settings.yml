@@ -1,0 +1,4 @@
+api_key_storage_type: 'database'
+environment_storage_key: ''
+api_key: ''
+debug: false
