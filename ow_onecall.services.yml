@@ -1,0 +1,4 @@
+services:
+  ow_onecall.api:
+    class: Drupal\ow_onecall\OWOneCallApiService
+    arguments: ['@database', '@config.factory', '@logger.factory', '@http_client']

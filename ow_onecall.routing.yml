@@ -1,0 +1,31 @@
+ow_onecall.settings:
+  path: '/admin/config/services/onecall'
+  defaults:
+    _title: 'One Call API Settings'
+    _form: 'Drupal\ow_onecall\Form\OWOneCallApiSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
+
+ow_onecall.geocode:
+  path: '/onecall/geocode'
+  defaults:
+    _title: 'One Call API Geocode Test'
+    _controller: '\Drupal\ow_onecall\Controller\OWOneCallApiTestController::geocode'
+  requirements:
+    _permission: 'administer site configuration'
+
+ow_onecall.current:
+  path: '/onecall/current'
+  defaults:
+    _title: 'One Call API Current Weather Test'
+    _controller: '\Drupal\ow_onecall\Controller\OWOneCallApiTestController::currentWeather'
+  requirements:
+    _permission: 'administer site configuration'
+
+ow_onecall.historical:
+  path: '/onecall/historical'
+  defaults:
+    _title: 'One Call API Historical Weather Test'
+    _controller: '\Drupal\ow_onecall\Controller\OWOneCallApiTestController::historical'
+  requirements:
+    _permission: 'administer site configuration'
