@@ -228,8 +228,8 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface {
     if ( empty($api_key) && isset($_ENV[$this->config->get('environment_storage_key')]) ) {
       $api_key = $_ENV[$this->config->get('environment_storage_key')];
     }
-    // Try to load the .env file using the phpdotenv library.
-    if ( empty($api_key) ) {
+    // Try to load the .env file using the phpdotenv library if it exists.
+    if ( empty($api_key) && class_exists('\Dotenv\Dotenv') ) {
       $dotenv = \Dotenv\Dotenv::createImmutable(\Drupal::root());
       $dotenv->load();
       if ( isset($_ENV[$this->config->get('environment_storage_key')]) ) {
