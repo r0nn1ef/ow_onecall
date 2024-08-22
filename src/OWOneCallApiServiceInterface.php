@@ -21,6 +21,16 @@ interface OWOneCallApiServiceInterface {
    */
   public function geocode(string $country, string $city, string $state="", int $limit=1): array;
 
+    /**
+     * Reverse geocode a lat/lon coordinates to city, state (US only), and country.
+     *
+     * @param float $lat Latitude coordinate
+     * @param float $lon Longitude coordinate
+     * @param int $limit Number of results in the response. Max of 5 results can be returned.
+     * @return array
+     */
+  public function reverseGeocode(float $lat, float $lon, int $limit=1):array;
+
   /**
    * Returns the current weather, minute forecast for 1 hour, hourly forecast for 48 hours, daily forecast for 8 days
    * and government weather alerts.

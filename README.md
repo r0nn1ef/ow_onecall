@@ -33,6 +33,9 @@ Once you have the repository added, you can add the module using <code>composer 
 ## CONFIGURATION
 - To enter your API key, navigate to /admin/config/services/openweather.
 
+## USAGE NOTES
+- When doing geocoding for cities in the United Kingdom, **you MUST use 'GB' for Great Britain instead** or no results will be returned.
+
 ## ROADMAP
 - [x] Make api key optionally stored in either the database or in a .evn file. :tada:
 
