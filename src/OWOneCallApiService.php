@@ -61,10 +61,12 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface {
    */
   private static int $CALL_TYPE_GEOCODE = 0;
 
+  private static int $CALL_TYPE_REVERSE_GEOCODE = 1;
+
   /**
    * @var int $CALL_TYPE_WEATHER
    */
-  private static int $CALL_TYPE_WEATHER = 1;
+  private static int $CALL_TYPE_WEATHER = 2;
 
   /**
    * Constructs an OneCallService object.
@@ -87,8 +89,6 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface {
    */
   public function geocode(string $country, string $city, string $state = "", int $limit = 1): array
   {
-    $data = [];
-    $fp = NULL;
     $params = [
       'timeout' => 30,
       'query' => [
@@ -101,7 +101,27 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface {
     return $this->call( self::$CALL_TYPE_GEOCODE, $params );
   }
 
-  /**
+    /**
+     * {@inheritDoc}
+     */
+  public function reverseGeocode(float $lat, float $lon, $limit=1): array
+  {
+      $data = [];
+
+      $params = [
+          'timeout' => 30,
+          'query' => [
+              'lat' => $lat,
+              'lon' => $lon,
+              'limit' => $limit,
+              'appid' => $this->getApiKey()
+          ]
+      ];
+
+      return $this->call( self::$CALL_TYPE_REVERSE_GEOCODE, $params );
+  }
+
+    /**
    * @inheritDoc
    */
   public function currentWeather(float $lat, float $lon, string $exclude="", string $units="standard", string $lang=""): mixed
