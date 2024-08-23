@@ -109,12 +109,22 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function geocode(string $country, string $city, string $state="", int $limit = 1): array
     {
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
         $params = [
             'timeout' => 30,
             'query' => [
                 'q' => ($city . ',' . (!empty($state) ? strtoupper($state) . ',' : '') . strtoupper($country)),
                 'limit' => $limit,
-                'appid' => $this->getApiKey()
+                'appid' => $api_key
             ]
         ];
 
@@ -126,7 +136,16 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function reverseGeocode(float $lat, float $lon, $limit = 1): array
     {
-        $data = [];
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
 
         $params = [
             'timeout' => 30,
@@ -134,7 +153,7 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
                 'lat' => $lat,
                 'lon' => $lon,
                 'limit' => $limit,
-                'appid' => $this->getApiKey()
+                'appid' => $api_key
             ]
         ];
 
@@ -146,12 +165,22 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function currentWeather(float $lat, float $lon, string $exclude = "", string $units = "standard", string $lang = ""): mixed
     {
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
         $params = [
             'timeout' => 30,
             'query' => [
                 'lat' => $lat,
                 'lon' => $lon,
-                'appid' => $this->getApiKey(),
+                'appid' => $api_key,
             ]
         ];
         if (!empty($exclude)) {
@@ -172,10 +201,20 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function historicalWeather(float $lat, float $lon, int $date, string $timezone = "", string $units = "standard", string $lang = ""): array
     {
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
         $params = [
             'timeout' => 30,
             'query' => [
-                'appid' => $this->getApiKey()
+                'appid' => $api_key
             ],
         ];
         /*
@@ -211,10 +250,20 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function weatherOverview(float $lat, float $lon, int $date, string $units = "standard"): array
     {
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
         $params = [
             'timeout' => 30,
             'query' => [
-                'appid' => $this->getApiKey(),
+                'appid' => $api_key,
                 'lat' => $lat,
                 'lon' => $lon,
                 'dt' => date('Y-m-d', $date)
@@ -235,10 +284,20 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
      */
     public function dailyAggregation(float $lat, float $lon, int $date, string $timezone = "", string $units = "standard", string $lang = ""): array
     {
+        /*
+         * If our api key is empty, we can't do anything so return an error.
+         */
+        $api_key = $this->getApiKey();
+        if( $api_key == '' ) {
+            return [
+                'code' => 400,
+                'error' => 'One Call app ID can not be empty.'
+            ];
+        }
         $params = [
             'timeout' => 30,
             'query' => [
-                'appid' => $this->getApiKey(),
+                'appid' => $api_key,
                 'lat' => $lat,
                 'lon' => $lon,
                 'dt' => date('Y-m-d', $date)
@@ -263,7 +322,7 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
         $api_key = '';
         // API key is stored in the database.
         if ($this->config->get('api_key_storage_type') == 'database') {
-            $api_key = $this->getApiKey();
+            $api_key = $this->config->get('api_key');
         }
         // Try to get the api key from an environment variable.
         if (empty($api_key) && isset($_ENV[$this->config->get('environment_storage_key')])) {
@@ -277,14 +336,12 @@ final class OWOneCallApiService implements OWOneCallApiServiceInterface
                 $api_key = $_ENV[$this->config->get('environment_storage_key')];
             }
         }
-        if (empty($api_key)) {
-            trigger_error('OpenWeather One Call API key is not set.', E_USER_ERROR);
-        }
+
         return $api_key;
     }
 
     /**
-     * Utility function that makes all API calls. This removes duplicate code from other methods.
+     * Utility function that makes all API calls. This function removes duplicate code from other methods.
      *
      * @param int $type
      * @param array $params
