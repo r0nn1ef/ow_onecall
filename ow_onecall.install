@@ -27,14 +27,54 @@ function ow_onecall_schema() {
           'default' => 0,
           'size' => 'normal'
         ],
-        'call_count' => [
+        'type_weather' => [
           'type' => 'int',
-          'description' => 'The number of calls for the given date.',
+          'description' => 'The number of calls for the given date for weather.',
           'unsigned' => TRUE,
           'not null' => TRUE,
           'default' => 0,
           'size' => 'normal'
-        ]
+        ],
+          'type_geocode' => [
+              'type' => 'int',
+              'description' => 'The number of calls for the given date for geocode.',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+              'size' => 'normal'
+          ],
+          'type_reverse_geocode' => [
+              'type' => 'int',
+              'description' => 'The number of calls for the given date for reverse geocode.',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+              'size' => 'normal'
+          ],
+          'type_historical' => [
+              'type' => 'int',
+              'description' => 'The number of calls for the given date for historical weather.',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+              'size' => 'normal'
+          ],
+          'type_aggregation' => [
+              'type' => 'int',
+              'description' => 'The number of calls for the given date for aggregated weather.',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+              'size' => 'normal'
+          ],
+          'type_overview' => [
+              'type' => 'int',
+              'description' => 'The number of calls for the given date for weather overview.',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+              'size' => 'normal'
+          ],
       ],
       'primary key' => ['id'],
       'indexes' => [
@@ -55,20 +95,32 @@ function ow_onecall_requirements($phase) {
     $today = new \DateTime();
     $today->setTime(0, 0, 0);
     $result = \Drupal::database()
-      ->query("SELECT call_count FROM {onecall_count} WHERE call_date = :today", [':today' => $today->getTimestamp()]);
-    $record = $result->fetchCol(0);
-    if ( $record ) {
-      $count = (int) $record[0];
-      if ( $count <= 750 ) {
+      ->query("SELECT * FROM {onecall_count} WHERE call_date = :today", [':today' => $today->getTimestamp()], [], ['fetch' => PDO::FETCH_ASSOC])->fetchAll();
+
+    if ( $result ) {
+        $result = $result[0];
+      $total = (int) $result->type_weather + (int) $result->type_geocode + (int) $result->type_reverse_geocode + (int) $result->type_historical + (int) $result->type_aggregation + (int) $result->type_overview;
+
+      if ( $total <= 750 ) {
         $status = REQUIREMENT_OK;
-      } elseif ($count > 750 && $count < 1000) {
+      } elseif ($total > 750 && $total < 1000) {
         $status = REQUIREMENT_WARNING;
-      } elseif ( $count >= 1000 ) {
+      } elseif ( $total >= 1000 ) {
         $status = REQUIREMENT_ERROR;
       }
+      $replacements = [
+          '@count' => $total,
+          '@weather_count' => $result->type_weather,
+          '@geo_count' => $result->type_geocode,
+          '@rgeo_count' => $result->type_reverse_geocode,
+          '@historical_count' => $result->type_historical,
+          '@daily_count' => $result->type_aggregation,
+          '@overview_count' => $result->type_overview,
+      ];
+      $description = t('<p>There have been @count One Call API request(s) today. (Current weather: @weather_count, Weather overview: @overview_count, Historical weather: @historical_count, Daily weather aggregation: @daily_count, Geocode: @geo_count, Reverse geocode: @rgeo_count)</p>', $replacements);
       $requirements['ow_onecall'] = [
         'title' => t('One Call API'),
-        'description' => t('There have been @count One Call API request(s) today.', ['@count' => $count]),
+        'description' => $description,
         'severity' => $status,
       ];
     } else {
